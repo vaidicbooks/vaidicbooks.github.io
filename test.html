@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+    <head>
+        <script type="text/javascript" src="test.json"></script>
+        <script type="text/javascript" >
+            function load() {
+                var mydata = JSON.parse(data);
+                alert(mydata.length);
+
+                var div = document.getElementById('data');
+
+                for(var i = 0;i < mydata.length; i++)
+                {
+                    div.innerHTML = div.innerHTML + "<p class='inner' id="+i+">"+ mydata[i].name +"</p>" + "<br>";
+                }
+            }
+        </script>
+    </head>
+    <body onload="load()">
+        <div id="data">
+       
+        <select id="cat-id" class="form-control">
+    <option id="">A</option>
+    <option id="">B</option>
+    <option id="">C</option>
+    <option id="">D</option>
+</select>
+ 
+<!-- HTML Markup (Child # 1) -->
+<select id="subcat-id" class="form-control">
+    <option id="">P</option>
+    <option id="">Q</option>
+    <option id="">R</option>
+    <option id="">S</option>
+</select>
+ 
+<!-- HTML Markup (Child # 2) -->
+<select id="prod-id" class="form-control">
+    <option id=""><a href="">xyz</a></option>
+    <option id=""><a href="index">xyy</a></option>
+    <option id=""><a href="ind.cc">zzz</a></option>
+    <option id=""><a href="aus.cc">yyy</a></option>
+</select>
+ 
+<!-- Javascript call on document ready -->
+<script>
+    // Child # 1
+    $("#subcat-id").depdrop({
+        url: '/server/getSubcat.php',
+        depends: ['cat-id']
+    });
+ 
+    // Child # 2
+    $("#prod-id").depdrop({
+        url: '/server/getProd.php',
+        depends: ['cat-id', 'subcat-id']
+    });
+</script>
+ 
+<!-- PHP example: /server/getSubCat.php -->
+<?php
+    $out = [];
+    if (isset($_POST['depdrop_parents'])) {
+        $parents = $_POST['depdrop_parents'];
+        if ($parents != null) {
+            $cat_id = $parents[0];
+            $out = self::getSubCatList($cat_id); 
+            // the getSubCatList function will query the database based on the
+            // cat_id and return an array like below:
+            // [
+            //    ['id'=>'<sub-cat-id-1>', 'name'=>'<sub-cat-name1>'],
+            //    ['id'=>'<sub-cat-id-2>', 'name'=>'<sub-cat-name2>']
+            // ]
+            echo json_encode(['output'=>$out, 'selected'=>'']);
+            return;
+        }
+    }
+    echo json_encode(['output'=>'', 'selected'=>'']);
+?>
+ 
+<!-- PHP example: /server/getProd.php -->
+<?php
+    $out = [];
+    if (isset($_POST['depdrop_parents'])) {
+        $ids = $_POST['depdrop_parents'];
+        $cat_id = empty($ids[0]) ? null : $ids[0];
+        $subcat_id = empty($ids[1]) ? null : $ids[1];
+        if ($cat_id != null) {
+           $data = self::getProdList($cat_id, $subcat_id);
+            /**
+             * the getProdList function will query the database based on the
+             * cat_id and sub_cat_id and return an array like below:
+             *  [
+             *      'out'=>[
+             *          ['id'=>'<prod-id-1>', 'name'=>'<prod-name1>'],
+             *          ['id'=>'<prod-id-2>', 'name'=>'<prod-name2>']
+             *       ],
+             *       'selected'=>'<prod-id-1>'
+             *  ]
+             */
+           
+           echo json_encode(['output'=>$data['out'], 'selected'=>$data['selected']]);
+           return;
+        }
+    }
+    echo json_encode(['output'=>'', 'selected'=>'']);
+?>
+
+
+        </div>
+    </body>
+</html>
