@@ -328,16 +328,15 @@
        }
        #yajurved-btn {
         position: absolute;
-        top: 120%;
+        top: 140%;
        }
        #samved-btn {
         position: absolute;
-        top: 190%
+        top: 230%
        }
        #atharvved-btn {
         position: absolute;
-        top: 260%;
-        padding-bottom: 40px;
+        top: 320%;
        }
        .footer {
         display: none;
