@@ -18,7 +18,7 @@
     <option value="">Select state</option>
    </select>
    <br />
-   <select name="city" id="city" class="form-control input-lg" onchange="location= this.value;">
+   <select name="city" id="city" class="form-control input-lg">
     <option value="">Select city</option>
    </select>
   </div>
@@ -77,6 +77,12 @@ $(document).ready(function(){
       $('#city').html('<option value="">Select city</option>');
     }
   });
+ $(document).on('change', '#city', () => {
+    var country = $("#country").val();
+    var state = $("#state").val();
+    var city = $(this).val();
+    window.location.href = `${country}/${state}/${city}.html`;
+});
 });
 </script>
  </body>
