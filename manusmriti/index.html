@@ -109,7 +109,7 @@ $(document).ready(function(){
     var html_code = '';
     $.getJSON("adhyay_shloka.json", function(data){
 
-      html_code += '<option value="">Select '+id+'</option>';
+      html_code += '<option value="">'+id+' चुनें</option>';
       $.each(data, function(key, value){
         if(id == 'अध्याय')
         {
